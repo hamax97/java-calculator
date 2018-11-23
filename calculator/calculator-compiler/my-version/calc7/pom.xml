@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>co.edu.eafit.dis.st0270.s20172.calc7</groupId>
+  <artifactId>calc7</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>calc7</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.vbmacher</groupId>
+      <artifactId>java-cup</artifactId> <!-- Java Cup -->
+      <version>11b-20160615</version>
+    </dependency>
+    <dependency>
+      <groupId>gnu.getopt</groupId>
+      <artifactId>java-getopt</artifactId>
+      <version>1.0.13</version>
+    </dependency>
+    <dependency>
+      <groupId>de.jflex</groupId>
+      <artifactId>jflex</artifactId> <!-- Jflex -->
+      <version>1.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>co.edu.eafit.dis.st0270.javacalc</groupId>
+      <artifactId>javacalc</artifactId>
+      <version>0.0.1.6</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin> <!-- Java Cup plugin -->
+        <groupId>com.github.vbmacher</groupId>
+        <artifactId>cup-maven-plugin</artifactId>
+        <version>11b-20160615</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <cupDefinition>src/main/cup/syntax.cup</cupDefinition>
+          <className>CalcParser</className>
+          <symbolsName>CalcSymbol</symbolsName>
+          <packageName>co.edu.eafit.dis.st0270.s20172.calc7</packageName>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>de.jflex</groupId>
+        <artifactId>jflex-maven-plugin</artifactId> <!-- Jflex plugin -->
+        <version>1.6.1</version>
+       <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+     
+    </plugins>
+  </build>
+</project>

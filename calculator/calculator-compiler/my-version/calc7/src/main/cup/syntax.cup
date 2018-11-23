@@ -1,0 +1,73 @@
+package co.edu.eafit.dis.st0270.s20172.calc7;
+
+import java_cup.runtime.*;
+import java_cup.runtime.Symbol;
+import java_cup.runtime.SymbolFactory;
+import java_cup.runtime.ComplexSymbolFactory;
+import co.edu.eafit.dis.st0270.javacalc.abstree.AbsTree;
+import co.edu.eafit.dis.st0270.javacalc.abstree.AddNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.AssignNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.ClearNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.EpsilonNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.DivideNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.TimesNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.MinusNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.PlusNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.NumberNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.IdentifierNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.FunctionNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.ProgNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.RecallNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.ShiftLeftNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.ShiftRightNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.StoreNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.SubNode;
+import co.edu.eafit.dis.st0270.javacalc.abstree.StmsNode;
+
+
+
+terminal LESST, GREATERT, ADD, SUB, TIMES, DIVIDE, S, P, M, EQUALS, EOL, LPAREN, RPAREN, R, C;
+terminal String IDENTIFIER;
+terminal Integer NUMBER;
+
+non terminal AbsTree prog, stms, line, bitwise_expr, expr, term, storable, factor;
+
+/* left: Asociatividad por la izquiera */
+precedence left ADD, SUB;
+precedence left TIMES, DIVIDE; /* El ultimo en la lista es el de mayor precedencia. */
+
+start with prog;
+
+prog ::= stms:s					{:RESULT = new ProgNode(s);		:}
+     ;
+stms ::= stms:s line:li				{:RESULT = new StmsNode(s, li);		:}
+     | line:li					{:RESULT = new StmsNode(null, li); 	:}
+     ;
+line ::= bitwise_expr:be EOL			{:RESULT = be; :}
+     | IDENTIFIER:id EQUALS bitwise_expr:ex EOL	{:RESULT = new AssignNode(ex, id);		:}
+     | EOL	     	    		    	{:RESULT = new EpsilonNode(); 			:}
+     ;
+bitwise_expr ::= bitwise_expr:be LESST expr:ex	{:RESULT = new ShiftLeftNode(be, ex);		:}
+	    | bitwise_expr:be GREATERT expr:ex	{:RESULT = new ShiftRightNode(be, ex); 		:}
+	    | expr:ex	      	       		{:RESULT = ex; 			  		:}
+	    ;
+expr ::= expr:ex ADD term:t			{:RESULT = new AddNode(ex, t);			:}
+     | expr:ex SUB term:t			{:RESULT = new SubNode(ex, t);			:}
+     | term:t    	     			{:RESULT = t;  		   			:}
+     ;
+term ::= term:t TIMES storable:s		{:RESULT = new TimesNode(t, s);			:}
+     | term:t DIVIDE storable:s			{:RESULT = new DivideNode(t, s);		:}
+     | storable:s    				{:RESULT = s;  		    			:}
+     ;
+storable ::= factor:f S				{:RESULT = new StoreNode(f);			:}
+	 | factor:f P 				{:RESULT = new PlusNode(f);			:}
+	 | factor:f M				{:RESULT = new MinusNode(f);			:}
+	 | factor:f 				{:RESULT = f;					:}
+	 ;
+factor ::= NUMBER:n				{:RESULT = new NumberNode(n);			:}
+       | IDENTIFIER:id				{:RESULT = new IdentifierNode(id);		:}
+       | IDENTIFIER:id LPAREN bitwise_expr:ex RPAREN  {:RESULT = new FunctionNode(ex, id);	:}
+       | R	       	      		        {:RESULT = new RecallNode();			:}
+       | C					{:RESULT = new ClearNode();			:}
+       | LPAREN bitwise_expr:ex RPAREN		{:RESULT = ex; 					:}
+       ;

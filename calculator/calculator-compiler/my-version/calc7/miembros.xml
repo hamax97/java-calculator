@@ -1,0 +1,18 @@
+<grupo>
+<nombre>calc7</nombre>
+<url>https://svn.riouxsvn.com/270172calc7</url>
+<miembro>
+<nombre>Juan Diego Saldarriaga Betancur</nombre>
+<codigo>201629412010</codigo>
+<email>jsalda23@eafit.edu.co</email>
+</miembro>
+<miembro>
+<nombre>Hamilton Tobon Mosquera</nombre>
+<codigo>201510115010</codigo>
+<email>htobonm@eafit.edu.co</email>
+</miembro>
+<mainclass clase="CalcMain"/>
+</grupo>
+
+
+
